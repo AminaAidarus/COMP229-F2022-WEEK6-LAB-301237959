@@ -19,7 +19,7 @@ router.get('/register', DisplayRegisterPage);
 // Process Registration Page
 router.post('/register', ProcessRegisterPage);
 
-// Process lougout 
+// Process logout 
 router.get('/logout', ProcessLogoutPage);
 
 

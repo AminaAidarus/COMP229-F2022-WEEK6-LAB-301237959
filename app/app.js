@@ -18,7 +18,9 @@ import flash from 'connect-flash';
 import cors from 'cors';
 import passportJWT, { ExtractJwt } from 'passport-jwt';
 
-//
+//define JWT aliases
+let JWTStrategy = passportJWT.Strategy;
+let ExtractJWT = passportJWT.ExtractJwt;
 
 // Auth Step 2 - define our auth strategy
 let localStrategy = passportLocal.Strategy;
@@ -36,7 +38,10 @@ import { MongoURI, Secret } from '../config/config.js';
 import indexRouter from './routes/index.route.server.js'
 import movieRouter from './routes/movies.route.server.js';
 import authRouter from './routes/auth.route.server.js';
-import user from './models/user.js';
+
+//import API routes
+import authApiRouter from './routes/api/auth-api.route.server.js';
+import moviesApiRouter from './routes/api/movies-api.route.server.js';
 
 // Instantiate Express Application
 const app = express();
@@ -88,7 +93,7 @@ passport.deserializeUser(User.deserializeUser());
 //setup JWT options
 let jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOnKey: Secret
+    secretOrKey: Secret
 };
 
 //set JWT strategy 
@@ -109,6 +114,9 @@ app.use('/', indexRouter);
 app.use('/', movieRouter);
 app.use('/', authRouter);
 
+//Use Api Routes
+app.use('/api/auth', authApiRouter);
+app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesApiRouter);
 
 export default app;
 
